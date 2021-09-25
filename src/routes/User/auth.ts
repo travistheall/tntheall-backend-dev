@@ -10,6 +10,9 @@ import { Profile, User, UserType } from '../../models';
 const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
 const router = express.Router();
 
+const dev = process.env.DEVELOPMENT === 'true';
+const generic_server_error = (res: Response) => res.status(500).send('Server Error');
+
 // @route    GET api/auth
 // @desc     Get user by accessToken
 // @access   Private
@@ -27,7 +30,7 @@ router.get('/', auth, async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    dev ? res.status(500).send('Server Error @ GET api/auth') : generic_server_error(res);
   }
 });
 
@@ -78,7 +81,7 @@ router.post(
       );
     } catch (err: any) {
       console.error(err.message);
-      res.status(500).send('Server error');
+      dev ? res.status(500).send('Server Error @ POST api/auth') : generic_server_error(res);
     }
   }
 );
@@ -148,7 +151,7 @@ router.post(
       );
     } catch (err: any) {
       console.error(err.message);
-      res.status(500).send('Server error');
+      dev ? res.status(500).send('Server Error @ POST api/auth/sign-up') : generic_server_error(res);
     }
   }
 );

@@ -18,6 +18,8 @@ import { Post, User, Profile } from '../../models';
 
 const router = express.Router();
 
+const dev = process.env.DEVELOPMENT === 'true';
+const generic_server_error = (res: Response) => res.status(500).send('Server Error');
 
 // @route    POST api/profile/
 // @desc     Create or update user profile
@@ -47,7 +49,7 @@ router.post('/', auth, async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     console.error(err.message);
-    return res.status(500).send('Server Error');
+    return dev ? res.status(500).send('Server Error @ POST api/profile/') : generic_server_error(res);
   }
 });
 
@@ -61,7 +63,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.json({profiles: profiles});
   } catch (err: any) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    dev ? res.status(500).send('Server Error @ GET api/profile') : generic_server_error(res);
   }
 });
 
@@ -102,7 +104,7 @@ router.get(
       }
     } catch (err: any) {
       console.error(err.message);
-      return res.status(500).json({ msg: 'Server error' });
+      return dev ? res.status(500).send('Server Error @ GET api/profile/user/:id') : generic_server_error(res);
     }
   }
 );
@@ -125,7 +127,7 @@ router.delete('/', auth, async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    dev ? res.status(500).send('Server Error @ DELETE api/profile') : generic_server_error(res);
   }
 });
 
