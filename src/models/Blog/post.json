@@ -1,0 +1,67 @@
+[
+  {
+    "title": "FNDDS Intro",
+    "sections": [
+      {
+        "heading": "What is the FNDDS?",
+        "body": "The USDA Food and Nutrient Database for Dietary Studies (FNDDS) converts foods and beverages consumed in What We Eat in America (WWEIA), National Health and NutritionExamination Survey (NHANES) into gram amounts and determines their nutrient values. Appendix A lists abbreviations used in this documentation. The FNDDS 2017-2018 is the ninth version released."
+      },
+      {
+        "heading": "What We Eat in America, NHANES?",
+        "body": "Because the FNDDS generates the nutrient intake data files for WWEIA, NHANES, researchers do not need to use the FNDDS to estimate the nutrient intake for the survey respondents. FNDDS is made available for researchers to review the nutrient profiles for specific foods and beverages that were consumed in the WWEIA, NHANES in the corresponding survey years as well as their associated portions and recipe calculations. Such detailed information makes it possible to conduct enhanced analysis of dietary intakes. Additionally, FNDDS can be applied in other dietary research studies to determine the amounts of nutrients/food components in food and beverages."
+      }
+    ],
+    "tags": [
+      { "text": "nutrition" },
+      { "text": "database" },
+      { "text": "fndds" }
+    ],
+    "citation": "U.S. Department of Agriculture, Agricultural Research Service. 2020. USDA Food and Nutrient Database for Dietary Studies 2017-2018. Food Surveys Research Group Home Page, http://www.ars.usda.gov/nea/bhnrc/fsrg",
+    "comments": [
+      {
+        "user": { "displayName": "commenter5" },
+        "text": "dicks"
+      },
+      {
+        "user": { "displayName": "commenter1" },
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. ",
+        "thread": [
+          {
+            "user": { "displayName": "commenter2" },
+            "text": "dicks"
+          },
+          {
+            "user": { "displayName": "commenter2" },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+          },
+          {
+            "user": { "displayName": "commenter1" },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+          },
+          {
+            "user": { "displayName": "commenter3" },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+          }
+        ]
+      },
+      {
+        "user": { "displayName": "commenter3" },
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+      },
+      {
+        "user": { "displayName": "commenter4" },
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. ",
+        "thread": [
+          {
+            "user": { "displayName": "commenter2" },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+          },
+          {
+            "user": { "displayName": "commenter1" },
+            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+.vscode/
+build/
+node_modules/
+src/.env
+build/.env
+hodl_old_uri.txt

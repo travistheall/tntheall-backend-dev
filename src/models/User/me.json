@@ -1,0 +1,93 @@
+[{
+  "_id": {
+      "$oid": "613b921799e5771a44804a77"
+  },
+  "avatar": "https://gravatar.com/avatar/5d53e18e985784557c500f4d7c924feb?d=mm&r=pg&s=200",
+  "theme": "RALLY",
+  "date": {
+      "$date": "2021-09-10T17:12:55.920Z"
+  },
+  "__v": 0,
+  "details": {
+      "First_Name": {
+          "text": "Travis",
+          "isVisible": true
+      },
+      "Last_Name": {
+          "text": "Theall",
+          "isVisible": true
+      },
+      "Bio": {
+          "text": "Test Bio",
+          "isVisible": true
+      },
+      "Website": {
+          "text": "https://www.tntheall.com",
+          "isVisible": true
+      }
+  },
+  "about": {
+      "City": {
+          "text": "Baton Rouge",
+          "isVisible": true
+      },
+      "State": {
+          "text": "LA",
+          "isVisible": true
+      },
+      "Company": {
+          "text": "Alphident",
+          "isVisible": true
+      },
+      "Job_Title": {
+          "text": "Frontend Developer",
+          "isVisible": true
+      }
+  },
+  "skills": {
+      "text": ["test", "python", "javascript", "asdf"],
+      "isVisible": true
+  },
+  "social": {
+      "Youtube": {
+          "text": "https://youtube.com/channel/UCg9KyxKowrc9R9kDYvgjZGg",
+          "isVisible": false
+      },
+      "Twitter": {
+          "text": "https://twitter.com/TheallTravis",
+          "isVisible": true
+      },
+      "Instagram": {
+          "text": "https://instagram.com/travistheall",
+          "isVisible": true
+      },
+      "LinkedIn": {
+          "text": "https://linkedin.com/in/travis-theall",
+          "isVisible": true
+      },
+      "Facebook": {
+          "text": "https://facebook.com/travis.theall",
+          "isVisible": true
+      },
+      "Github": {
+          "text": "https://github.com/travistheall",
+          "isVisible": true
+      }
+  }
+},
+{
+  "_id": {
+      "$oid": "613b921799e5771a44804a75"
+  },
+  "displayName": "tnt",
+  "email": "travistheall@outlook.com",
+  "password": "$2a$10$el3E0M8YSr5woE2NRBXHnOeHWw3gQaDErAwcNrc/L7tVE2rfKieqC",
+  "date": {
+      "$date": "2021-09-10T17:12:55.813Z"
+  },
+  "__v": 0,
+  "profile": {
+      "$oid": "613b921799e5771a44804a77"
+  }
+}
+]
