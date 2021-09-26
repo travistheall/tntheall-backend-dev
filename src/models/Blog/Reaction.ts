@@ -1,7 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { UserInterface } from '../User';
-
-
+import { UserInterface } from '../types';
 export interface ReactionInterface {
   id: string;
   user: UserInterface;
@@ -25,6 +23,5 @@ const ReactionSchema = new Schema<ReactionInterface>({
   }
 });
 
-const Reaction = model<ReactionInterface>('reaction', ReactionSchema);
+export const Reaction = model<ReactionInterface>('reaction', ReactionSchema);
 
-export default Reaction;

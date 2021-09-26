@@ -144,7 +144,9 @@ interface ProfileQueryHelpers {
   byProfileId(
     id: string
   ): Query<any, Document<ProfileInterface>> & ProfileQueryHelpers;
-  byDisplayName(displayName: string): Query<any, Document<ProfileInterface>> & ProfileQueryHelpers;
+  byDisplayName(
+    displayName: string
+  ): Query<any, Document<ProfileInterface>> & ProfileQueryHelpers;
 }
 
 ProfileSchema.query.byProfileId = function (
@@ -159,9 +161,7 @@ ProfileSchema.query.byDisplayName = function (
   return this.find({ displayName: displayName });
 };
 
-const profile = model<
+export const Profile = model<
   ProfileInterface,
   Model<ProfileInterface, ProfileQueryHelpers>
 >('profile', ProfileSchema);
-
-export default profile;

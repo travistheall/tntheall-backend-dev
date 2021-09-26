@@ -1,3 +1,4 @@
+import categoryRouter from './category';
 import postRouter from './posts';
 
-export { postRouter };
+export { categoryRouter, postRouter };

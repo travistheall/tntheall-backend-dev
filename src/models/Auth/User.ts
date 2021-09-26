@@ -9,8 +9,6 @@ export interface UserInterface {
   profile: ProfileInterface;
 } 
 
-export type UserType = UserInterface | null
-
 const UserSchema = new Schema<UserInterface>({
   email: {
     type: String,
@@ -43,7 +41,4 @@ UserSchema.query.byId = function (
   return this.findById(id);
 };
 
-const User = model<UserInterface , Model<UserInterface , UserQueryHelpers>>('user', UserSchema);
-
-
-export default User;
+export const User = model<UserInterface , Model<UserInterface , UserQueryHelpers>>('user', UserSchema);

@@ -1,44 +1,40 @@
 import express, { Request, Response } from 'express';
-import { check, validationResult } from 'express-validator';
+// import { check, validationResult } from 'express-validator';
 import auth from '../../middleware/auth';
 import checkObjectId from '../../middleware/checkObjectId';
-import { Post, Comment, Reaction } from '../../models';
+import { User, Post } from '../../models';
+
+// import Section from '../../models/Blog/Section';
 
 const router = express.Router();
 const dev = process.env.DEVELOPMENT === 'true';
-const generic_server_error = (res: Response) => res.status(500).send('Server Error');
-// @route    POST api/posts
+const generic_server_error = (res: Response) =>
+  res.status(500).send('Server Error');
+
+// @route    POST api/post
 // @desc     Create a post
 // @access   Private
-router.post(
-  '/',
-  auth,
-  check('sections', 'Sections is required').notEmpty(),
-  async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.post('/', auth, async (req: Request, res: Response) => {
+  try {
+    if (req.user) {
+      let u = await User.findById(req.user.id);
+      let b = {
+        user: u,
+        ...req.body
+      };
+      const p = new Post(b);
+      await p.save();
+      res.json(p);
     }
-    try {
-      if (req.user) {
-        const newPost = new Post({
-          user: req.user.id,
-          sections: req.body.sections,
-          tags: req.body.tags,
-          reactions: [],
-          comments: []
-        });
-        const post = await newPost.save();
-        res.json(post);
-      }
-    } catch (err: any) {
-      console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/posts') : generic_server_error(res);
-    }
+  } catch (err: any) {
+    console.error(err.message);
+    dev
+      ? res.status(500).send('Server Error @ POST api/post')
+      : generic_server_error(res);
   }
-);
+});
 
-// @route    GET api/posts
+// @route    GET api/post
 // @desc     Get all posts
 // @access   Public
 router.get('/', async (req: Request, res: Response) => {
@@ -47,27 +43,13 @@ router.get('/', async (req: Request, res: Response) => {
     res.json(posts);
   } catch (err: any) {
     console.error(err.message);
-    dev ? res.status(500).send('Server Error @ GET api/posts') : generic_server_error(res);
+    dev
+      ? res.status(500).send('Server Error @ GET api/post')
+      : generic_server_error(res);
   }
 });
 
-// @route    GET api/posts/:id
-// @desc     Get post by ID
-// @access   Private
-router.get('/:id', auth, checkObjectId, async (req: Request, res: Response) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ msg: 'Post not found' });
-    }
-    res.json(post);
-  } catch (err: any) {
-    console.error(err.message);
-    dev ? res.status(500).send('Server Error @ GET api/posts/:id') : generic_server_error(res);
-  }
-});
-
-// @route    DELETE api/posts/:id
+// @route    DELETE api/post/:id
 // @desc     Delete a post
 // @access   Private
 router.delete(
@@ -91,12 +73,35 @@ router.delete(
       }
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ DELETE api/posts/:id') : generic_server_error(res);
+      dev
+        ? res.status(500).send('Server Error @ DELETE api/post/:id')
+        : generic_server_error(res);
     }
   }
 );
 
-// @route    POST api/posts/:id/react/
+/*
+// @route    GET api/post/:id
+// @desc     Get post by ID
+// @access   Private
+router.get('/:id', auth, checkObjectId, async (req: Request, res: Response) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+    res.json(post);
+  } catch (err: any) {
+    console.error(err.message);
+    dev
+      ? res.status(500).send('Server Error @ GET api/post/:id')
+      : generic_server_error(res);
+  }
+});
+
+
+
+// @route    POST api/post/:id/react/
 // @desc     Like or Dislike a post
 // @access   Private
 router.post(
@@ -110,7 +115,7 @@ router.post(
         const post = await Post.findById(post_id).populate('reactions');
         if (post) {
           // Check if the post has already been reacted to
-          let user_reaction = post.reactions.filter(
+          let user_reaction = post.reactions?.filter(
             (reaction) => reaction.user.toString() === req.user?.id
           );
           if (user_reaction) {
@@ -128,7 +133,7 @@ router.post(
               reaction: req.body.reaction
             });
             await reaction.save();
-            post.reactions.push(reaction.id);
+            post.reactions?.push(reaction.id);
             await post.save();
             return res.json({ reaction: reaction });
           }
@@ -138,12 +143,14 @@ router.post(
       }
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/posts/:id/react/') : generic_server_error(res);
+      dev
+        ? res.status(500).send('Server Error @ POST api/post/:id/react/')
+        : generic_server_error(res);
     }
   }
 );
 
-// @route    POST api/posts/:id/react/
+// @route    POST api/post/:id/react/
 // @desc     Change Like or Dislike on a post
 // @access   Private
 router.post(
@@ -171,12 +178,14 @@ router.post(
       }
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/posts/:id/react/') : generic_server_error(res);
+      dev
+        ? res.status(500).send('Server Error @ POST api/post/:id/react/')
+        : generic_server_error(res);
     }
   }
 );
 
-// @route    POST api/posts/:id/comment/
+// @route    POST api/post/:id/comment/
 // @desc     Comment on a post
 // @access   Private
 router.post(
@@ -193,7 +202,7 @@ router.post(
             comment: req.body.comment
           });
           await comment.save();
-          post.comments.push(comment.id);
+          post.comments?.push(comment.id);
           await post.save();
           return res.json({ comment: comment });
         }
@@ -202,12 +211,14 @@ router.post(
       }
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/posts/:id/comment/') : generic_server_error(res);
+      dev
+        ? res.status(500).send('Server Error @ POST api/post/:id/comment/')
+        : generic_server_error(res);
     }
   }
 );
 
-// @route    POST api/posts/comment/:id
+// @route    POST api/post/comment/:id
 // @desc     Reply to a comment
 // @access   Private
 router.post(
@@ -234,13 +245,15 @@ router.post(
       }
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/posts/comment/:id') : generic_server_error(res);
+      dev
+        ? res.status(500).send('Server Error @ POST api/post/comment/:id')
+        : generic_server_error(res);
     }
   }
 );
 
-/*
-// @route    DELETE api/posts/comment/:id/:comment_id
+/
+// @route    DELETE api/post/comment/:id/:comment_id
 // @desc     Delete comment
 // @access   Private
 router.delete('/comment/:id/:comment_id', auth, async (req: Request, res: Response) => {
@@ -269,7 +282,7 @@ router.delete('/comment/:id/:comment_id', auth, async (req: Request, res: Respon
     return res.json(post.comments);
   } catch (err) {
     console.error(err.message);
-    return dev ? res.status(500).send('Server Error @ POST REQUEST api/posts') : generic_server_error(res);
+    return dev ? res.status(500).send('Server Error @ POST REQUEST api/post') : generic_server_error(res);
   }
 });
 */

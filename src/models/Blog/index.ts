@@ -1,12 +1,13 @@
-import Post, { PostInterface } from './Post';
-import Reaction, { ReactionInterface } from './Reaction';
-import Comment, { CommentInterface } from './Comment';
+import { Category} from './Category';
+import { Comment } from './Comment';
+import { Post } from './Post';
+import { Reaction } from './Reaction';
+import { Topic } from './Topic';
 
 export {
-  Post,
+  Category,
   Comment,
-  CommentInterface,
+  Post,
   Reaction,
-  ReactionInterface,
-  PostInterface
+  Topic
 };

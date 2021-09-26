@@ -1,61 +1,11 @@
-import {   Post,
-  Comment,
-  CommentInterface,
-  Reaction,
-  ReactionInterface,
-  PostInterface } from './Blog';
-import {
-  Meal,
-  MealInterface,
-  MealPortion,
-  MealPortionInterface,
-  Participant,
-  ParticiapntInterface,
-  Serving,
-  ServingIterface,
-  Study,
-  StudyInterface
-} from './DCAP';
-import {
-  Food,
-  FoodInterface,
-  FoodNut,
-  FoodNutInterface,
-  FoodIngredient,
-  FoodIngredientInterface,
-  FoodPortion,
-  FoodPortionInterface
-} from './FNDDS';
-import { User, Profile, ProfileInterface, UserInterface, UserType } from './User';
+import { Category, Comment, Post, Reaction } from './Blog';
+import { Profile, User } from './Auth';
 
 export {
-  Post,
+  Category,
   Comment,
-  CommentInterface,
-  Reaction,
-  ReactionInterface,
-  PostInterface,
-  Meal,
-  MealInterface,
-  MealPortion,
-  MealPortionInterface,
-  Participant,
-  ParticiapntInterface,
-  Serving,
-  ServingIterface,
-  Study,
-  StudyInterface,
-  Food,
-  FoodInterface,
-  FoodNut,
-  FoodNutInterface,
-  FoodIngredient,
-  FoodIngredientInterface,
-  FoodPortion,
-  FoodPortionInterface,
-  User,
+  Post,
   Profile,
-  ProfileInterface,
-  UserInterface,
-  UserType
+  Reaction,
+  User,
 };

@@ -1,87 +1,88 @@
-import express, { Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { check, validationResult } from 'express-validator';
+import { check, validationResult, ValidationError } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import normalize from 'normalize-url';
 import gravatar from 'gravatar';
 import auth from '../../middleware/auth';
-import { Profile, User, UserType } from '../../models';
+import { Profile, User } from '../../models';
+import { UserInterface } from '../../models/types';
+import { server_500, invalid_400, not_found_404 } from '../genericResponses';
 
+type UserResponse = {
+  errors?: [{ msg: string }] | ValidationError[];
+  accessToken?: string;
+  user?: UserInterface;
+};
 const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
-const router = express.Router();
-
-const dev = process.env.DEVELOPMENT === 'true';
-const generic_server_error = (res: Response) => res.status(500).send('Server Error');
+const router = Router();
 
 // @route    GET api/auth
 // @desc     Get user by accessToken
 // @access   Private
-router.get('/', auth, async (req: Request, res: Response) => {
-  try {
-    if (req.user) {
-      const user = await User.findById(req.user.id, 'email').populate(
-        'profile'
-      );
-      if (user) {
-        res.json({
-          user: user
-        });
+router.get(
+  '/',
+  auth,
+  async (req: Request<{}, UserResponse, UserInterface>, res: Response<UserResponse>) => {
+    try {
+      if (req.user) {
+        const user = await User.findById(req.user.id, 'email').populate(
+          'profile'
+        );
+        if (user) {
+          res.json({ user: user });
+        } else {
+          return not_found_404(res, 'User not found');
+        }
       }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ GET api/auth');
     }
-  } catch (err: any) {
-    console.error(err.message);
-    dev ? res.status(500).send('Server Error @ GET api/auth') : generic_server_error(res);
   }
-});
+);
 
 // @route    POST api/auth
 // @desc     Authenticate user & get accessToken
 // @access   Public
+type SignInReqBody = { email: string; password: string };
 router.post(
   '/sign-in',
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists(),
-  async (req: Request, res: Response) => {
+  async (
+    req: Request<SignInReqBody, UserResponse, UserInterface>,
+    res: Response<UserResponse>
+  ) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
     const { email, password } = req.body;
-    console.log('signing in', email);
     try {
-      let user: UserType = await User.findOne({ email });
+      let user = await User.findOne({ email });
       if (!user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+        return invalid_400(res);
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+        return invalid_400(res);
       }
-      const payload = {
-        user: {
-          id: user.id
-        }
-      };
-
+      const payload = { user: { id: user.id } };
       jwt.sign(
         payload,
         JWT_SECRET,
         { expiresIn: '5 days' },
         (err: any, accessToken) => {
-          if (err) throw err;
-          res.json({
-            accessToken
-          });
+          if (err) {
+            throw err;
+          }
+          res.json({ accessToken });
         }
       );
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/auth') : generic_server_error(res);
+      server_500(res, 'Server Error @ POST api/auth');
     }
   }
 );
@@ -89,6 +90,12 @@ router.post(
 // @route    POST api/auth/sign-up
 // @desc     Register user
 // @access   Public
+type SignUpReqBody = { 
+  email: string; 
+  password: string;
+  profile: { displayName: string };
+};
+
 router.post(
   '/sign-up',
   check('displayName', 'Display name is required').notEmpty(),
@@ -97,19 +104,19 @@ router.post(
     'password',
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
-  async (req: Request, res: Response) => {
+  async (
+    req: Request<SignUpReqBody, UserResponse, UserInterface>,
+    res: Response<UserResponse>
+  ) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { displayName, email, password } = req.body;
+    const { email, password, profile: {displayName} } = req.body;
     try {
       let user = await User.findOne({ email });
       if (user) {
-        console.log('no user');
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'User already exists' }] });
+        return invalid_400(res, 'User already exists');
       }
       const avatar = normalize(
         gravatar.url(email, {
@@ -135,11 +142,7 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       await user.save();
-      const payload = {
-        user: {
-          id: user.id
-        }
-      };
+      const payload = { user: { id: user.id } };
       jwt.sign(
         payload,
         JWT_SECRET,
@@ -151,7 +154,7 @@ router.post(
       );
     } catch (err: any) {
       console.error(err.message);
-      dev ? res.status(500).send('Server Error @ POST api/auth/sign-up') : generic_server_error(res);
+      server_500(res, 'Server Error @ POST api/auth/sign-up');
     }
   }
 );

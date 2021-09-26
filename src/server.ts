@@ -1,49 +1,47 @@
-//https://www.npmjs.com/package/dotenv
+// @link https://www.npmjs.com/package/dotenv
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/.env' })
-import express, {Application} from 'express';
-import connectDB from './config/db';
-import cors, {CorsOptions} from 'cors';
+dotenv.config({ path: __dirname + '/.env' });
+import express, { Application, Router } from 'express';
+import connectDb from './config/connectDb';
+import cors, { CorsOptions } from 'cors';
 import {
   authRouter,
-  profileRouter,
+  categoryRouter,
   postRouter,
+  profileRouter
 } from './routes';
+const dev = process.env.DEVELOPMENT === 'true';
 
 const app: Application = express();
 
-//https://www.twilio.com/blog/add-cors-support-express-typescript-api
-const allowedOrigins = [
-  'https://www.tntheall.com',
-  'https://tntheall.herokuapp.com',
-  'https://localhost:3000',
-  'http://localhost:3000'
-];
+//  @link https://www.twilio.com/blog/add-cors-support-express-typescript-api
+const allowedOrigins = dev
+  ? ['*']
+  : [
+      'https://www.tntheall.com',
+      'https://tntheall.herokuapp.com',
+      'https://localhost:3000',
+      'http://localhost:3000'
+    ];
+
 const options: CorsOptions = {
   origin: allowedOrigins
 };
 // Connect Database
-connectDB();
+connectDb();
+
 // Init Middleware
 app.use(cors(options));
 app.use(express.json());
 
 // Define Routes
-app.use('/api/auth', authRouter);
-app.use('/api/profile', profileRouter);
-app.use('/api/posts', postRouter);
-
-/*
-app.use('/api/study', studyRouter);
-app.use('/api/participant', participantRouter);
-app.use('/api/meal', mealRouter);
-app.use('/api/mealportion', mealPortionRouter);
-
-app.use('/api/foodingredient', foodIngredientRouter);
-app.use('/api/food', foodRouter);
-app.use('/api/foodnut', foodNutRouter);
-app.use('/api/foodport', foodPortionRouter);
-*/
+const use = (path: string, router: Router) => {
+  app.use(`/api/${path}`, router);
+}
+use('auth', authRouter);
+use('category', categoryRouter);
+use('profile', profileRouter);
+use('post', postRouter);
 
 const PORT = process.env.PORT || 8000;
 

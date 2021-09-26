@@ -1,4 +1,9 @@
 import { authRouter, profileRouter } from './User';
-import {postRouter } from './Blog';
+import { postRouter, categoryRouter } from './Blog';
 
-export { authRouter, profileRouter, postRouter };
+export { 
+  authRouter, 
+  categoryRouter,
+  postRouter,
+  profileRouter
+};
