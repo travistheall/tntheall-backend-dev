@@ -8,7 +8,9 @@ import {
   authRouter,
   categoryRouter,
   postRouter,
-  profileRouter
+  profileRouter,
+  topicRouter,
+  reactionRouter
 } from './routes';
 const dev = process.env.DEVELOPMENT === 'true';
 
@@ -16,7 +18,7 @@ const app: Application = express();
 
 //  @link https://www.twilio.com/blog/add-cors-support-express-typescript-api
 const allowedOrigins = dev
-  ? ['*']
+  ? ['http://localhost:3000']
   : [
       'https://www.tntheall.com',
       'https://tntheall.herokuapp.com',
@@ -42,6 +44,8 @@ use('auth', authRouter);
 use('category', categoryRouter);
 use('profile', profileRouter);
 use('post', postRouter);
+use('topic', topicRouter);
+use('reaction', reactionRouter);
 
 const PORT = process.env.PORT || 8000;
 

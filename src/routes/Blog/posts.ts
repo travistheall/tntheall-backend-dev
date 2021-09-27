@@ -2,104 +2,231 @@ import express, { Request, Response } from 'express';
 // import { check, validationResult } from 'express-validator';
 import auth from '../../middleware/auth';
 import checkObjectId from '../../middleware/checkObjectId';
-import { User, Post } from '../../models';
-
-// import Section from '../../models/Blog/Section';
+import { User, Post, Topic } from '../../models';
+import { PostInterface } from '../../models/types';
+import { server_500, not_found_404, deletion_200 } from '../genericResponses';
 
 const router = express.Router();
-const dev = process.env.DEVELOPMENT === 'true';
-const generic_server_error = (res: Response) =>
-  res.status(500).send('Server Error');
 
+type PostResponse = {
+  errors?: [{ msg: string }];
+  posts?: PostInterface[];
+  post?: PostInterface;
+};
+type DeletionResponse = {
+  errors?: [{ msg: string }];
+  success?: [{ msg: string }];
+};
+
+// POST REQUESTS
 // @route    POST api/post
 // @desc     Create a post
 // @access   Private
-router.post('/', auth, async (req: Request, res: Response) => {
-  try {
-    if (req.user) {
-      let u = await User.findById(req.user.id);
-      let b = {
-        user: u,
-        ...req.body
-      };
-      const p = new Post(b);
-      await p.save();
-      res.json(p);
+router.post(
+  '/',
+  auth,
+  async (
+    req: Request<{}, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      let user = await User.findById(req?.user?.id);
+      if (user) {
+        let b = {
+          ...req.body,
+          user
+        };
+        const post = new Post(b);
+        await post.save();
+        res.json({ post: post });
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ POST api/post');
     }
-  } catch (err: any) {
-    console.error(err.message);
-    dev
-      ? res.status(500).send('Server Error @ POST api/post')
-      : generic_server_error(res);
   }
-});
+);
 
+// GET REQUESTS
 // @route    GET api/post
 // @desc     Get all posts
 // @access   Public
-router.get('/', async (req: Request, res: Response) => {
-  try {
-    const posts = await Post.find().sort({ date: -1 });
-    res.json(posts);
-  } catch (err: any) {
-    console.error(err.message);
-    dev
-      ? res.status(500).send('Server Error @ GET api/post')
-      : generic_server_error(res);
+router.get(
+  '/',
+  async (
+    req: Request<{}, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      const posts = await Post.find(
+        {},
+        'topic title reactions comments sections'
+      ).populate('topic reactions', 'text');
+      if (!posts) {
+        return not_found_404(res, 'Posts not found');
+      } else {
+        return res.json({ posts: posts });
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ GET api/post');
+    }
   }
-});
+);
 
+// @route    GET api/post/:id
+// @desc     Get Post by ID
+// @access   Public
+router.get(
+  '/:id',
+  checkObjectId,
+  async (
+    req: Request<{ id: string }, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      const post = await Post.findById(req.params.id).populate('reactions');
+      if (!post) {
+        return not_found_404(res, 'Post not found');
+      } else {
+        return res.json({ post: post });
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ GET api/post/:id');
+    }
+  }
+);
+
+// @route    GET api/post/topic/:id
+// @desc     Get Posts by Topic ID
+// @access   Public
+router.get(
+  '/topic/:id',
+  checkObjectId,
+  async (
+    req: Request<{ id: string }, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      const topic = await Topic.findById(req.params.id);
+      if (topic){
+        const posts = await Post.find({ topic: topic }, 'topic title reactions comments sections').populate(
+          'topic reactions', 'text'
+        );
+        if (!posts) {
+          return not_found_404(res, 'No posts from this topic');
+        } else {
+          return res.json({ posts: posts });
+        }
+      } else {
+        return not_found_404(res, 'Topic not found');
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ GET api/post/:id');
+    }
+  }
+);
+
+// DELETE REQUESTS
 // @route    DELETE api/post/:id
 // @desc     Delete a post
 // @access   Private
 router.delete(
   '/:id',
   [auth, checkObjectId],
-  async (req: Request, res: Response) => {
+  async (
+    req: Request<{ id: string }, DeletionResponse, PostInterface>,
+    res: Response<DeletionResponse>
+  ) => {
     try {
       if (req.user) {
         const post = await Post.findById(req.params.id);
         if (!post) {
-          return res.status(404).json({ msg: 'Post not found' });
+          return not_found_404(res, 'Post not found');
         }
         // Check user
         if (post.user.toString() !== req.user.id) {
-          return res.status(401).json({ msg: 'User not authorized' });
+          return not_found_404(res, 'User not authorized');
         }
         await post.remove();
-        res.json({ msg: 'Post removed' });
+        deletion_200(res, 'Post Deleted');
       } else {
-        return res.status(404).json({ msg: 'User not found' });
+        return not_found_404(res, 'User not found');
       }
     } catch (err: any) {
       console.error(err.message);
-      dev
-        ? res.status(500).send('Server Error @ DELETE api/post/:id')
-        : generic_server_error(res);
+      server_500(res, 'Server Error @ DELETE api/post/:id');
     }
   }
 );
-
 /*
-// @route    GET api/post/:id
-// @desc     Get post by ID
-// @access   Private
-router.get('/:id', auth, checkObjectId, async (req: Request, res: Response) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ msg: 'Post not found' });
+// PUT REQUESTS
+// @route    PUT api/post/:id
+// @desc     Update a post
+// @access   Public
+router.put(
+  '/:id',
+  [auth, checkObjectId],
+  async (
+    req: Request<{ id: string }, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      const post = await Post.findById(req.params.id).populate('reactions');
+      if (post) {
+        Object.entries(req.body).map(async ([key, value]) => {
+          switch (key) {
+            case 'reactions':
+              if (post.reactions?.length === 0) {
+                const reaction = new Reaction(value[0]);
+                await reaction.save();
+                if (reaction) {
+                  await post.update({reactions: [reaction]});
+                  const updated_post = await Post.findById(req.params.id);
+                  return updated_post
+                    ? res.json({ post: updated_post })
+                    : not_found_404(res, 'Post not found');
+                } else {
+                  return not_found_404(res, 'Post not found');
+                }
+              } else {
+                const { reactions } = post;
+                const reaction = reactions?.filter(reaction => reaction.user === req.user?.id)
+                if (reaction) {
+                  reaction.update
+                }
+                // const reaction = new Reaction(value);
+                await reaction.save();
+                await post.updateOne({ reactions: [reaction.id] });
+                const updated_post = await Post.findById(req.params.id);
+                return updated_post
+                  ? res.json({ post: updated_post })
+                  : not_found_404(res, 'Post not found');
+              }
+            default:
+              break;
+          }
+        });
+      } /*
+      const update_post = await Post.findByIdAndUpdate(req.params.id, req.body);
+      if (!update_post) {
+        return not_found_404(res, 'Post not found');
+      } else {
+        const updated_post = await Post.findById(req.params.id);
+        if (!updated_post) {
+          return not_found_404(res, 'Post not found');
+        } else {
+          return res.json({ post: updated_post });
+        }
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ PUT api/post/:id');
     }
-    res.json(post);
-  } catch (err: any) {
-    console.error(err.message);
-    dev
-      ? res.status(500).send('Server Error @ GET api/post/:id')
-      : generic_server_error(res);
   }
-});
-
-
+);
 
 // @route    POST api/post/:id/react/
 // @desc     Like or Dislike a post
@@ -108,11 +235,12 @@ router.post(
   '/:id/react',
   auth,
   checkObjectId,
-  async (req: Request, res: Response) => {
+  async (
+    req: Request<{ id: string }, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
     try {
-      if (req.user) {
-        const post_id = req.params.id;
-        const post = await Post.findById(post_id).populate('reactions');
+        const post = await Post.findById(req.params.id).populate('reactions');
         if (post) {
           // Check if the post has already been reacted to
           let user_reaction = post.reactions?.filter(
@@ -150,6 +278,7 @@ router.post(
   }
 );
 
+/*
 // @route    POST api/post/:id/react/
 // @desc     Change Like or Dislike on a post
 // @access   Private

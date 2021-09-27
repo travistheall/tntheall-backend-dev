@@ -1,4 +1,4 @@
-import { Category, Comment, Post, Reaction } from './Blog';
+import { Category, Comment, Post, Reaction, Topic } from './Blog';
 import { Profile, User } from './Auth';
 
 export {
@@ -7,5 +7,6 @@ export {
   Post,
   Profile,
   Reaction,
+  Topic,
   User,
 };

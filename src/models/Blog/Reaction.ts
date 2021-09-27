@@ -3,7 +3,7 @@ import { UserInterface } from '../types';
 export interface ReactionInterface {
   id: string;
   user: UserInterface;
-  reaction: string;
+  text: string;
   date: Date;
 }
 
@@ -13,7 +13,7 @@ const ReactionSchema = new Schema<ReactionInterface>({
     required: true,
     ref: 'user'
   },
-  reaction: {
+  text: {
     type: String,
     required: true
   },

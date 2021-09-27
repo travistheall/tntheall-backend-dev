@@ -6,7 +6,7 @@ export interface TopicInterface {
 }
 
 const TopicSchema = new Schema<TopicInterface>({
-  text: String,
+  text: { type: String, require: true },
 });
 
 export const Topic = model<TopicInterface>('topic', TopicSchema);

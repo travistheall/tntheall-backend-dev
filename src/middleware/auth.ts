@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { invalid_400, server_500 } from "../routes/genericResponses";
 import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
 
@@ -7,13 +8,13 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization');
   // Check if not token
   if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
+    return invalid_400(res, 'No token, authorization denied');
   }
   // Verify token
   try {
     jwt.verify(token, JWT_SECRET, (error, decoded) => {
       if (error) {
-        return res.status(401).json({ msg: 'Token is not valid' });
+        return invalid_400(res, 'Token is not valid');
       } else {
         if (decoded) {
           req.user = decoded.user;
@@ -23,7 +24,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (err: any) {
     console.error('something wrong with auth middleware');
-    res.status(500).json({ msg: 'Server Error' });
+    server_500(res);
   }
 };
 export default auth;

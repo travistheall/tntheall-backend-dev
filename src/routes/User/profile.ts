@@ -4,23 +4,19 @@ import { Router, Request, Response } from 'express';
 import auth from '../../middleware/auth';
 import checkObjectId from '../../middleware/checkObjectId';
 import {
-  Social,
   SocialItems,
   SocialItem,
-  Details,
   DetailItem,
   DetailItems,
-  About,
   AboutItem,
   AboutItems,
-  ProfileInterface,
-  SettingStringListItem
+  ProfileInterface
 } from '../../models/types';
 import { Post, User, Profile } from '../../models';
 import { server_500, invalid_400, not_found_404, deletion_200 } from '../genericResponses';
+
 // Profile Creation is handled in the auth.ts file
 // This is done during the sign up.
-
 const router = Router();
 
 type ProfileResponse = {
@@ -36,17 +32,11 @@ type DeletionResponse = {
 // @route    POST api/profile
 // @desc     Create or update user profile
 // @access   Private
-type ProfilePostReqBody = {
-  details?: Details;
-  about?: About;
-  social?: Social;
-  skills?: SettingStringListItem;
-};
 router.post(
   '/',
   auth,
   async (
-    req: Request<{}, ProfilePostReqBody, ProfileInterface>,
+    req: Request<{}, ProfileResponse, ProfileInterface>,
     res: Response<ProfileResponse>
   ) => {
     try {
@@ -81,13 +71,41 @@ router.post(
   }
 );
 
+// @route    PUT api/profile/:id
+// @desc     Update a profile
+// @access   Public
+router.put(
+  '/:id',
+  [auth, checkObjectId],
+  async (
+    req: Request<{ id: string }, ProfileResponse, ProfileInterface>,
+    res: Response<ProfileResponse>
+  ) => {
+    try {
+      const update_profile = await Profile.findByIdAndUpdate(req.params.id, req.body);
+      if (!update_profile) {
+        return not_found_404(res, 'Profile not found');
+      } else {
+        const updated_profile = await Profile.findById(req.params.id);
+        if (!updated_profile) {
+          return not_found_404(res, 'Profile not found');
+        } else {
+          return res.json({ profile: updated_profile });
+        }
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ PUT api/profile/:id');
+    }
+  }
+);
 // @route    GET api/profile
 // @desc     Get all profiles
 // @access   Public
 router.get(
   '/',
   async (
-    req: Request<{}, {}, ProfileInterface>,
+    req: Request<{}, ProfileResponse, ProfileInterface>,
     res: Response<ProfileResponse>
   ) => {
     try {
@@ -111,7 +129,7 @@ router.get(
   '/:id',
   checkObjectId,
   async (
-    req: Request<{ id: string }, {}, ProfileInterface>,
+    req: Request<{ id: string }, ProfileResponse, ProfileInterface>,
     res: Response<ProfileResponse>
   ) => {
     const profile_id = req.params['id'];
@@ -155,7 +173,7 @@ router.delete(
   '/',
   auth,
   async (
-    req: Request<{}, {}, ProfileInterface>,
+    req: Request<{}, DeletionResponse, ProfileInterface>,
     res: Response<DeletionResponse>
   ) => {
     try {
