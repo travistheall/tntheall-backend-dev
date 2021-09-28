@@ -1,4 +1,4 @@
-import { UserInterface } from '../types';
+import { ProfileInterface } from '../types';
 import { Document, Model, Query, Schema, model } from 'mongoose';
 import { ReactionInterface } from './Reaction';
 import { CommentInterface } from './Comment';
@@ -9,7 +9,7 @@ export interface SectionInterface {
   body: string;
 }
 export interface PostInterface {
-  user: UserInterface;
+  profile: ProfileInterface;
   title: string;
   topic: TopicInterface;
   sections: SectionInterface[];
@@ -20,7 +20,7 @@ export interface PostInterface {
 }
 
 const PostSchema = new Schema<PostInterface>({
-  user: { type: Schema.Types.ObjectId, ref: 'user' },
+  profile: { type: Schema.Types.ObjectId, ref: 'profile' },
   title: String,
   topic: { type: Schema.Types.ObjectId, ref: 'topic' },
   sections: [
@@ -37,7 +37,10 @@ const PostSchema = new Schema<PostInterface>({
       ref: 'reaction'
     }
   ],
-  comments: [{ type: Schema.Types.ObjectId, ref: 'comment' }],
+  comments: [{ 
+    type: Schema.Types.ObjectId,
+    ref: 'comment'
+  }],
   date: {
     type: Date,
     default: Date.now

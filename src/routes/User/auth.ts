@@ -93,7 +93,7 @@ router.post(
 type SignUpReqBody = { 
   email: string; 
   password: string;
-  profile: { displayName: string };
+  displayName: string;
 };
 
 router.post(
@@ -105,14 +105,14 @@ router.post(
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
   async (
-    req: Request<SignUpReqBody, UserResponse, UserInterface>,
+    req: Request<{}, UserResponse, SignUpReqBody>,
     res: Response<UserResponse>
   ) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password, profile: {displayName} } = req.body;
+    const { email, password, displayName } = req.body;
     try {
       let user = await User.findOne({ email });
       if (user) {

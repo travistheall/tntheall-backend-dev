@@ -1,5 +1,5 @@
 import { authRouter, profileRouter } from './User';
-import { postRouter, categoryRouter, topicRouter, reactionRouter } from './Blog';
+import { postRouter, categoryRouter, topicRouter, reactionRouter, commentRouter } from './Blog';
 
 export { 
   authRouter, 
@@ -8,4 +8,5 @@ export {
   profileRouter,
   reactionRouter,
   topicRouter,
+  commentRouter
 };

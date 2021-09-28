@@ -10,7 +10,8 @@ import {
   postRouter,
   profileRouter,
   topicRouter,
-  reactionRouter
+  reactionRouter,
+  commentRouter
 } from './routes';
 const dev = process.env.DEVELOPMENT === 'true';
 
@@ -39,13 +40,14 @@ app.use(express.json());
 // Define Routes
 const use = (path: string, router: Router) => {
   app.use(`/api/${path}`, router);
-}
+};
 use('auth', authRouter);
 use('category', categoryRouter);
 use('profile', profileRouter);
 use('post', postRouter);
 use('topic', topicRouter);
 use('reaction', reactionRouter);
+use('comment', commentRouter);
 
 const PORT = process.env.PORT || 8000;
 

@@ -2,11 +2,21 @@ import express, { Request, Response } from 'express';
 // import { check, validationResult } from 'express-validator';
 import auth from '../../middleware/auth';
 import checkObjectId from '../../middleware/checkObjectId';
-import { User, Post, Topic } from '../../models';
-import { PostInterface } from '../../models/types';
+import { User, Post, Topic, Reaction } from '../../models';
+import { PostInterface, ReactionInterface } from '../../models/types';
+
 import { server_500, not_found_404, deletion_200 } from '../genericResponses';
 
 const router = express.Router();
+const get_profile_id = async (user_id: string) => {
+  try {
+    const user = await User.findById(user_id).populate('profile');
+    const profile_id = user?.profile.id;
+    return profile_id;
+  } catch (err: any) {
+    console.log(err);
+  }
+};
 
 type PostResponse = {
   errors?: [{ msg: string }];
@@ -30,11 +40,11 @@ router.post(
     res: Response<PostResponse>
   ) => {
     try {
-      let user = await User.findById(req?.user?.id);
-      if (user) {
+      let profile_id = await get_profile_id(req?.user?.id);
+      if (profile_id) {
         let b = {
           ...req.body,
-          user
+          profile: profile_id
         };
         const post = new Post(b);
         await post.save();
@@ -85,10 +95,13 @@ router.get(
     res: Response<PostResponse>
   ) => {
     try {
-      const post = await Post.findById(req.params.id).populate('reactions');
+      const post = await Post.findById(req.params.id).populate(
+        'reactions profile'
+      );
       if (!post) {
         return not_found_404(res, 'Post not found');
       } else {
+        console.log(post.comments);
         return res.json({ post: post });
       }
     } catch (err: any) {
@@ -110,10 +123,11 @@ router.get(
   ) => {
     try {
       const topic = await Topic.findById(req.params.id);
-      if (topic){
-        const posts = await Post.find({ topic: topic }, 'topic title reactions comments sections').populate(
-          'topic reactions', 'text'
-        );
+      if (topic) {
+        const posts = await Post.find(
+          { topic: topic },
+          'topic title reactions comments sections'
+        ).populate('topic reactions', 'text');
         if (!posts) {
           return not_found_404(res, 'No posts from this topic');
         } else {
@@ -147,7 +161,8 @@ router.delete(
           return not_found_404(res, 'Post not found');
         }
         // Check user
-        if (post.user.toString() !== req.user.id) {
+        let profile_id = await get_profile_id(req.user.id);
+        if (post.profile.toString() !== profile_id) {
           return not_found_404(res, 'User not authorized');
         }
         await post.remove();
@@ -161,73 +176,8 @@ router.delete(
     }
   }
 );
-/*
-// PUT REQUESTS
-// @route    PUT api/post/:id
-// @desc     Update a post
-// @access   Public
-router.put(
-  '/:id',
-  [auth, checkObjectId],
-  async (
-    req: Request<{ id: string }, PostResponse, PostInterface>,
-    res: Response<PostResponse>
-  ) => {
-    try {
-      const post = await Post.findById(req.params.id).populate('reactions');
-      if (post) {
-        Object.entries(req.body).map(async ([key, value]) => {
-          switch (key) {
-            case 'reactions':
-              if (post.reactions?.length === 0) {
-                const reaction = new Reaction(value[0]);
-                await reaction.save();
-                if (reaction) {
-                  await post.update({reactions: [reaction]});
-                  const updated_post = await Post.findById(req.params.id);
-                  return updated_post
-                    ? res.json({ post: updated_post })
-                    : not_found_404(res, 'Post not found');
-                } else {
-                  return not_found_404(res, 'Post not found');
-                }
-              } else {
-                const { reactions } = post;
-                const reaction = reactions?.filter(reaction => reaction.user === req.user?.id)
-                if (reaction) {
-                  reaction.update
-                }
-                // const reaction = new Reaction(value);
-                await reaction.save();
-                await post.updateOne({ reactions: [reaction.id] });
-                const updated_post = await Post.findById(req.params.id);
-                return updated_post
-                  ? res.json({ post: updated_post })
-                  : not_found_404(res, 'Post not found');
-              }
-            default:
-              break;
-          }
-        });
-      } /*
-      const update_post = await Post.findByIdAndUpdate(req.params.id, req.body);
-      if (!update_post) {
-        return not_found_404(res, 'Post not found');
-      } else {
-        const updated_post = await Post.findById(req.params.id);
-        if (!updated_post) {
-          return not_found_404(res, 'Post not found');
-        } else {
-          return res.json({ post: updated_post });
-        }
-      }
-    } catch (err: any) {
-      console.error(err.message);
-      server_500(res, 'Server Error @ PUT api/post/:id');
-    }
-  }
-);
 
+/*
 // @route    POST api/post/:id/react/
 // @desc     Like or Dislike a post
 // @access   Private
