@@ -142,7 +142,7 @@ router.put(
 );
 
 // @route    POST api/comment/post/:id
-// @desc     Update a comment
+// @desc     Post a comment on a Blog Post
 // @access   Private
 router.post(
   '/post/:id',
@@ -183,4 +183,5 @@ router.post(
     }
   }
 );
+
 export default router;

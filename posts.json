@@ -1,0 +1,38 @@
+{
+  "posts": [
+      {
+          "reactions": [
+              {
+                  "_id": "61520c7b252e03210d9c896e",
+                  "text": "Dislike"
+              },
+              {
+                  "_id": "61520d4e6f9e8d217c56b0ba",
+                  "text": "Reply"
+              }
+          ],
+          "comments": [
+              "61524f793aed3252233aaa06",
+              "61525f25ee1e0a5b9a7c3775"
+          ],
+          "_id": "6150d0271e43ba3044d48809",
+          "title": "FNDDS Intro 1",
+          "sections": [
+              {
+                  "_id": "6150d0271e43ba3044d4880a",
+                  "heading": "What is the FNDDS?",
+                  "body": "The USDA Food and Nutrient Database for Dietary Studies (FNDDS) converts foods and beverages consumed in What We Eat in America (WWEIA), National Health and NutritionExamination Survey (NHANES) into gram amounts and determines their nutrient values. Appendix A lists abbreviations used in this documentation. The FNDDS 2017-2018 is the ninth version released."
+              },
+              {
+                  "_id": "6150d0271e43ba3044d4880b",
+                  "heading": "What We Eat in America, NHANES?",
+                  "body": "Because the FNDDS generates the nutrient intake data files for WWEIA, NHANES, researchers do not need to use the FNDDS to estimate the nutrient intake for the survey respondents. FNDDS is made available for researchers to review the nutrient profiles for specific foods and beverages that were consumed in the WWEIA, NHANES in the corresponding survey years as well as their associated portions and recipe calculations. Such detailed information makes it possible to conduct enhanced analysis of dietary intakes. Additionally, FNDDS can be applied in other dietary research studies to determine the amounts of nutrients/food components in food and beverages."
+              }
+          ],
+          "topic": {
+              "_id": "615103efefc7a63ada5da3f7",
+              "text": "FNDDS"
+          }
+      }
+  ]
+}

@@ -25,24 +25,6 @@
       {
         "user": { "displayName": "commenter1" },
         "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. ",
-        "thread": [
-          {
-            "user": { "displayName": "commenter2" },
-            "text": "dicks"
-          },
-          {
-            "user": { "displayName": "commenter2" },
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
-          },
-          {
-            "user": { "displayName": "commenter1" },
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
-          },
-          {
-            "user": { "displayName": "commenter3" },
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
-          }
-        ]
       },
       {
         "user": { "displayName": "commenter3" },
@@ -51,16 +33,6 @@
       {
         "user": { "displayName": "commenter4" },
         "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. ",
-        "thread": [
-          {
-            "user": { "displayName": "commenter2" },
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
-          },
-          {
-            "user": { "displayName": "commenter1" },
-            "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin gravida laoreet sapien, nec ornare nisi condimentum non. Integer at egestas purus. Nullam erat tellus, pellentesque ut augue vel, tristique bibendum velit. Nam et tristique leo. Ut dui mi, lacinia eu turpis in, auctor sollicitudin quam. Aenean efficitur justo velit, sit amet eleifend mi consequat nec. Curabitur iaculis sem sodales, maximus erat non, bibendum turpis. "
-          }
-        ]
       }
     ]
   }

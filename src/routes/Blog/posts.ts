@@ -111,6 +111,31 @@ router.get(
   }
 );
 
+// @route    GET api/post/:id
+// @desc     Get Post by ID
+// @access   Public
+router.put(
+  '/:id',
+  checkObjectId,
+  async (
+    req: Request<{ id: string }, PostResponse, PostInterface>,
+    res: Response<PostResponse>
+  ) => {
+    try {
+      console.log(req.body);
+      const post = await Post.findByIdAndUpdate(req.params.id, req.body)
+      if (!post) {
+        return not_found_404(res, 'Post not found');
+      } else {
+        return res.json({ post: post });
+      }
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ GET api/post/:id');
+    }
+  }
+);
+
 // @route    GET api/post/topic/:id
 // @desc     Get Posts by Topic ID
 // @access   Public
