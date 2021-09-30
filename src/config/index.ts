@@ -1,0 +1,9 @@
+export { setAWS } from './setAWS';
+export { connectDb } from './connectDb';
+export { getcors } from './s3_getcors';
+export { setcors } from './s3_setcors';
+export { getbucketacl } from './s3_getbucketacl';
+export { setbucketpolicy } from './s3_setbucketpolicy';
+export { getbucketpolicy } from './s3_getbucketpolicy';
+export { upload_object } from './s3_upload_object';
+export { s3Client } from './s3Client';

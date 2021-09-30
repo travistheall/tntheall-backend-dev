@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-const uri = process.env.MONGODB_URI ? process.env.MONGODB_URI : "";
+const uri = process.env.MONGODB_URI ? process.env.MONGODB_URI : '';
 
 const connectDb = async () => {
   try {
@@ -18,4 +18,4 @@ const connectDb = async () => {
   }
 };
 
-export default connectDb;
+export { connectDb };

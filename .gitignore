@@ -1,5 +1,7 @@
 .vscode/
 build/
+json/
+uploads/
 node_modules/
 src/.env
 build/.env
