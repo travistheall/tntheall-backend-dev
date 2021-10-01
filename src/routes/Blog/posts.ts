@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 // import { check, validationResult } from 'express-validator';
-import auth from '../../middleware/auth';
-import checkObjectId from '../../middleware/checkObjectId';
+import { auth, checkObjectId } from '../../middleware';
 import { User, Post, Topic, Reaction } from '../../models';
 import { PostInterface, ReactionInterface } from '../../models/types';
 
@@ -123,7 +122,7 @@ router.put(
   ) => {
     try {
       console.log(req.body);
-      const post = await Post.findByIdAndUpdate(req.params.id, req.body)
+      const post = await Post.findByIdAndUpdate(req.params.id, req.body);
       if (!post) {
         return not_found_404(res, 'Post not found');
       } else {

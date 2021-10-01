@@ -5,6 +5,8 @@ import express, { Application, Router } from 'express';
 import { connectDb,} from './config';
 import cors, { CorsOptions } from 'cors';
 import morgan from 'morgan';
+
+//import fileUpload from 'express-fileupload';
 import {
   authRouter,
   categoryRouter,
@@ -21,7 +23,7 @@ const app: Application = express();
 
 //  @link https://www.twilio.com/blog/add-cors-support-express-typescript-api
 const allowedOrigins = dev
-  ? ['http://localhost:3000']
+  ? ['http://localhost:3000', 'http://192.168.1.120:3000']
   : [
       'https://www.tntheall.com',
       'https://tntheall.herokuapp.com',
@@ -37,8 +39,10 @@ connectDb();
 
 // Init Middleware
 app.use(cors(options));
+app.use(express.static('public'));
 app.use(express.json());
 app.use(morgan('dev'));
+
 
 // Define Routes
 const use = (path: string, router: Router) => {

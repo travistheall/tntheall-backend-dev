@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
-import checkObjectId from '../../middleware/checkObjectId';
-import auth from '../../middleware/auth';
+import { auth, checkObjectId } from '../../middleware';
 import { Comment, Post, User } from '../../models';
 import { CommentInterface } from '../../models/types';
 import { server_500, not_found_404, deletion_200 } from '../genericResponses';

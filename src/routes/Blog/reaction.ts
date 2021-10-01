@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Document } from 'mongoose';
-import checkObjectId from '../../middleware/checkObjectId';
-import auth from '../../middleware/auth';
+import { auth, checkObjectId } from '../../middleware';
 import { Reaction, Post, User, Comment } from '../../models';
 import {
   ReactionInterface,

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import checkObjectId from '../../middleware/checkObjectId';
+import { checkObjectId } from '../../middleware';
 import { Topic } from '../../models';
 import { TopicInterface } from '../../models/types';
 import { server_500, not_found_404, deletion_200 } from '../genericResponses';

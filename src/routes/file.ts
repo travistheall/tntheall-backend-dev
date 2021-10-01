@@ -1,67 +1,49 @@
 import { Router, Request, Response } from 'express';
-import multer from 'multer';
-import { s3Client } from '../config/s3Client';
-import { PutObjectCommand, PutObjectCommandOutput } from '@aws-sdk/client-s3';
+import { upload } from '../middleware';
+import { sendToS3 } from '../utils';
 
 const router = Router();
-const upload = multer();
 // @link https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started-nodejs.html
+// @link https://dev.to/austinbrownopspark/how-to-upload-and-serve-photos-using-react-node-express-36ii
 
-const uploadFile = async (file: Express.Multer.File, location: string) => {
+
+router.post('/', upload, async (req: Request, res: Response) => {
   try {
-    const params = {
-      Bucket: 'tntheall',
-      Key: `${location}/${file.originalname}`,
-      Body: file.buffer
-    };
-    const results = await s3Client.send(new PutObjectCommand(params));
-    return results;
-  } catch (err) {
-    console.log('Error', err);
-  }
-};
-
-router.post(
-  '/',
-  upload.array('files'),
-  async (req: Request, res: Response) => {
-    console.log('ran');
-    console.log(req?.body["location"]);
-    try {
-      if (!req.file) {
-        if (!req.files) {
-          res.send({
-            status: false,
-            message: 'No file uploaded'
-          });
-        } else {
-          const { files } = req;
-          console.log('files', files);
-          if (Array.isArray(files)) {
-            const results: PutObjectCommandOutput[] = [];
-            files.map(async (file) => {
-              const result = await uploadFile(file, req?.body["location"]);
-              if (result) {
-                results.push(result);
-              }
-            });
-            if (results) {
-              return res.json({ files: results });
-            }
-          }
-        }
+    if (!req.files) {
+      res.send({
+        status: 404,
+        message: 'Field files not found'
+      });
+    } else if (!req.body) {
+      res.send({
+        status: 404,
+        message: 'Field location not found'
+      });
+    } else {
+      const { files } = req;
+      const { location } = req.body;
+      if (Array.isArray(files)) {
+        files.map(async (file) => {
+          //await sendToS3(file, location);
+        });
+        res.send({
+          status: 200,
+          message: 'all files uploaded'
+        })
       } else {
-        const { file } = req;
-        console.log('file', file);
-        const results = await uploadFile(file, req?.body["location"]);
-        if (results) {
-          return res.json({ files: results });
-        }
+        res.send({
+          status: 400,
+          message: 'Field files needs to be an array'
+        });
       }
-    } catch (err: any) {
-      res.status(500).send(err);
     }
+  } catch (err: any) {
+    console.log('response sent');
+    res.status(500).send(err);
   }
-);
-
+});
+/*
+w/o s3 buckets
+@link https://attacomsian.com/blog/uploading-files-nodejs-express
+*/
 export default router;

@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 // import { check, validationResult } from 'express-validator';
 // import normalize from 'normalize-url';
-import auth from '../../middleware/auth';
-import checkObjectId from '../../middleware/checkObjectId';
+import { auth, checkObjectId, upload } from '../../middleware';
+import { sendToS3 } from '../../utils';
 import {
   SocialItems,
   SocialItem,
@@ -13,7 +13,12 @@ import {
   ProfileInterface
 } from '../../models/types';
 import { Post, User, Profile } from '../../models';
-import { server_500, invalid_400, not_found_404, deletion_200 } from '../genericResponses';
+import {
+  server_500,
+  invalid_400,
+  not_found_404,
+  deletion_200
+} from '../genericResponses';
 
 // Profile Creation is handled in the auth.ts file
 // This is done during the sign up.
@@ -71,6 +76,51 @@ router.post(
   }
 );
 
+// @route    PUT api/profile/avatar
+// @desc     Update a profile's avatar
+// @access   Public
+router.put(
+  '/avatar',
+  [auth, upload],
+  async (
+    req: Request<{}, ProfileResponse, ProfileInterface>,
+    res: Response<ProfileResponse>
+  ) => {
+    try {
+      const user = await User.findById(req.user?.id);
+      if (user) {
+        let profile_id = user.profile;
+        const profile = await Profile.findById(profile_id);
+        if (!profile) {
+          return not_found_404(res, 'Profile not found');
+        } else {
+          const locations = await sendToS3(req, res);
+          if (locations) {
+            const profile_avatar_url = locations[0];
+            await Profile.findByIdAndUpdate(profile_id, {
+              avatar: profile_avatar_url
+            });
+            const updated_profile = await Profile.findById(profile_id);
+            if (!updated_profile) {
+              return not_found_404(res, 'Profile not found');
+            } else {
+              return res.json({ profile: updated_profile });
+            }
+          } else {
+            return not_found_404(res, 'Profile avatar location not found');
+          }
+        }
+      } else {
+        invalid_400(res, 'User not found');
+      }
+
+    } catch (err: any) {
+      console.error(err.message);
+      server_500(res, 'Server Error @ PUT api/profile/avatar');
+    }
+  }
+);
+
 // @route    PUT api/profile/:id
 // @desc     Update a profile
 // @access   Public
@@ -82,7 +132,10 @@ router.put(
     res: Response<ProfileResponse>
   ) => {
     try {
-      const update_profile = await Profile.findByIdAndUpdate(req.params.id, req.body);
+      const update_profile = await Profile.findByIdAndUpdate(
+        req.params.id,
+        req.body
+      );
       if (!update_profile) {
         return not_found_404(res, 'Profile not found');
       } else {
@@ -99,6 +152,7 @@ router.put(
     }
   }
 );
+
 // @route    GET api/profile
 // @desc     Get all profiles
 // @access   Public
@@ -143,12 +197,18 @@ router.get(
           delete visibleProfile.skills;
         }
         SocialItems.map((key: SocialItem) => {
-          if (visibleProfile?.social && !visibleProfile?.social[key]?.isVisible) {
+          if (
+            visibleProfile?.social &&
+            !visibleProfile?.social[key]?.isVisible
+          ) {
             delete visibleProfile.social[key];
           }
         });
         DetailItems.map((key: DetailItem) => {
-          if (visibleProfile?.details && !visibleProfile.details[key]?.isVisible) {
+          if (
+            visibleProfile?.details &&
+            !visibleProfile.details[key]?.isVisible
+          ) {
             delete visibleProfile.details[key];
           }
         });

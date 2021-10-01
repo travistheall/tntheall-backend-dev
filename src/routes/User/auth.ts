@@ -2,9 +2,8 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { check, validationResult, ValidationError } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import normalize from 'normalize-url';
-import gravatar from 'gravatar';
-import auth from '../../middleware/auth';
+// import normalize from 'normalize-url';
+import { auth } from '../../middleware';
 import { Profile, User } from '../../models';
 import { UserInterface } from '../../models/types';
 import { server_500, invalid_400, not_found_404 } from '../genericResponses';
@@ -23,7 +22,10 @@ const router = Router();
 router.get(
   '/',
   auth,
-  async (req: Request<{}, UserResponse, UserInterface>, res: Response<UserResponse>) => {
+  async (
+    req: Request<{}, UserResponse, UserInterface>,
+    res: Response<UserResponse>
+  ) => {
     try {
       if (req.user) {
         const user = await User.findById(req.user.id, 'email').populate(
@@ -90,8 +92,8 @@ router.post(
 // @route    POST api/auth/sign-up
 // @desc     Register user
 // @access   Public
-type SignUpReqBody = { 
-  email: string; 
+type SignUpReqBody = {
+  email: string;
   password: string;
   displayName: string;
 };
@@ -118,27 +120,18 @@ router.post(
       if (user) {
         return invalid_400(res, 'User already exists');
       }
-      const avatar = normalize(
-        gravatar.url(email, {
-          s: '200',
-          r: 'pg',
-          d: 'mm'
-        }),
-        { forceHttps: true }
-      );
       let profile = new Profile({
         displayName,
-        avatar,
+        avatar:
+          'https://tntheall.s3.amazonaws.com/static/img/avatars/default.jpg',
         theme: 'DEFAULT'
       });
       user = new User({
         email,
-        avatar,
         password,
         profile
       });
       await profile.save();
-
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       await user.save();

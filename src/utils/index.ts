@@ -1,0 +1,9 @@
+export { setAWS } from './aws/setAWS';
+export { getcors } from './aws/s3_getcors';
+export { setcors } from './aws/s3_setcors';
+export { getbucketacl } from './aws/s3_getbucketacl';
+export { setbucketpolicy } from './aws/s3_setbucketpolicy';
+export { getbucketpolicy } from './aws/s3_getbucketpolicy';
+export { upload_object } from './aws/s3_upload_object';
+export { sendToS3 } from './aws/sendToS3';
+export { s3Client } from './aws/s3Client';

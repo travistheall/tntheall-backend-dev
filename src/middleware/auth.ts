@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { invalid_400, server_500 } from "../routes/genericResponses";
+import { invalid_400, server_500 } from '../routes/genericResponses';
 import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
 
@@ -27,4 +27,4 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     server_500(res);
   }
 };
-export default auth;
+export { auth };
